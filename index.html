@@ -3,59 +3,130 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Pagination Server</title>
+		<title>API Documentation</title>
 		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 0;
+				background-color: #f4f4f4;
+			}
 			.container {
-				font-family: "sans-serif";
-				display: "flex";
-				justify-content: "center";
-				align-items: "center";
-				height: "100vh";
-				width: "100%";
+				max-width: 800px;
+				margin: 50px auto;
+				background: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+			h1 {
+				color: #333;
+			}
+			h2 {
+				color: #666;
+			}
+			p {
+				line-height: 1.6;
+				color: #555;
+			}
+			code {
+				background: #eee;
+				padding: 2px 4px;
+				border-radius: 4px;
+			}
+			pre {
+				background: #eee;
+				padding: 10px;
+				border-radius: 4px;
+				overflow-x: auto;
+			}
+			.example {
+				background: #f9f9f9;
+				border-left: 4px solid #ccc;
+				padding: 10px;
+				margin: 20px 0;
 			}
 		</style>
 	</head>
 	<body>
-		<div
-			style="
-				font-family: sans-serif;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				flex-wrap: wrap;
-				text-wrap: balance;
-				min-width: 300px;
-				align-items: center;
-				height: 100vh;
-				width: 100%;
-				font-size: 20px;
-				line-height: 22px;
-				font-weight: bold;
-				padding-left: 50px;
-				padding-right: 50px;
-			"
-		>
-			<div>Visit /api to get the data</div>
-			<div style="font-size: 15px">
-				Query Params: <br />
-				page: Starting page (default:1)
-				<br />
-				perPage: Objects to return per page (default: 10)
-				<br />
-				Example:
-				<a
-					target="_blank"
-					href="https://pagination-server-five.vercel.app/api?page=3&perPage=2"
-					>https://pagination-server-five.vercel.app/api?page=3&perPage=2</a
-				>
-				<br />
-				Code above returns:
+		<div class="container">
+			<h1>API Documentation</h1>
+			<p>
+				This API provides paginated data using a Go serverless function deployed
+				on Vercel. The API returns a list of objects with pagination support,
+				allowing clients to specify the page number and the number of objects
+				per page.
+			</p>
 
-				<div>
-					{"objects":[{"name":"random name 5","content":"random content
-					5"},{"name":"random name 6","content":"random content
-					6"}],"nextPage":4}
-				</div>
+			<h2>Endpoint</h2>
+			<p><code>GET /api</code></p>
+
+			<h2>Query Parameters</h2>
+			<ul>
+				<li>
+					<code>page</code> (optional): The page number to start fetching data
+					from. Defaults to <code>1</code> if not provided or invalid.
+				</li>
+				<li>
+					<code>perPage</code> (optional): The number of objects to return per
+					page. Defaults to <code>10</code> if not provided or invalid. Maximum
+					is <code>1000</code>.
+				</li>
+				<li>
+					<code>longContent</code> (optional): If set to <code>true</code>, the
+					content of each object will contain 50 words of "Lorem Ipsum" text.
+				</li>
+			</ul>
+
+			<h2>Response</h2>
+			<p>
+				The API returns a JSON object containing the requested objects and the
+				next page number (if available).
+			</p>
+
+			<h3>Success Response</h3>
+			<pre><code>{
+  "objects": [
+    {
+      "name": "random name 1",
+      "content": "random content 1",
+      "image": "https://placehold.co/600x400"
+    },
+    {
+      "name": "random name 2",
+      "content": "random content 2",
+      "image": "https://placehold.co/600x400"
+    }
+    ...
+  ],
+  "nextPage": 2
+}</code></pre>
+
+			<h3>Error Response</h3>
+			<pre><code>{
+  "error": "error message"
+}</code></pre>
+
+			<h2>Example Requests</h2>
+
+			<div class="example">
+				<p>Fetch Default Page:</p>
+				<pre><code>curl -X GET "https://your-vercel-project/api"</code></pre>
+			</div>
+
+			<div class="example">
+				<p>Fetch Specific Page:</p>
+				<pre><code>curl -X GET "https://your-vercel-project/api?page=2"</code></pre>
+			</div>
+
+			<div class="example">
+				<p>Fetch Specific Page with Custom Objects per Page:</p>
+				<pre><code>curl -X GET "https://your-vercel-project/api?page=2&perPage=20"</code></pre>
+			</div>
+
+			<div class="example">
+				<p>Fetch with Long Content:</p>
+				<pre><code>curl -X GET "https://your-vercel-project/api?page=1&perPage=10&longContent=true"</code></pre>
 			</div>
 		</div>
 	</body>

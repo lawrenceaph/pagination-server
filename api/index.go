@@ -42,7 +42,7 @@ func simulatePagination(page int, objectsPerPage int) PaginationResult {
 		nextPage = page + 1
 	}
 
-	return PaginationResult{Objects: objects, CurrentPage: page,NextPage: nextPage}
+	return PaginationResult{Objects: objects, NextPage: nextPage}
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {

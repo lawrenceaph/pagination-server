@@ -1,11 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagination Server</title>
-</head>
-<body>
-   Visit /api to get the data  
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Pagination Server</title>
+		<style>
+			.container {
+				font-family: "sans-serif";
+				display: "flex";
+				justify-content: "center";
+				align-items: "center";
+				height: "100vh";
+				width: "100%";
+			}
+		</style>
+	</head>
+	<body>
+		<div
+			style="
+				font-family: sans-serif;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				flex-wrap: wrap;
+				text-wrap: balance;
+				min-width: 300px;
+				align-items: center;
+				height: 100vh;
+				width: 100%;
+				font-size: 20px;
+				line-height: 22px;
+				font-weight: bold;
+				padding-left: 50px;
+				padding-right: 50px;
+			"
+		>
+			<div>Visit /api to get the data</div>
+			<div style="font-size: 15px">
+				Query Params: <br />
+				page: Starting page (default:1)
+				<br />
+				perPage: Objects to return per page (default: 10)
+				<br />
+				Example:
+				<a
+					target="_blank"
+					href="https://pagination-server-five.vercel.app/api?page=3&perPage=2"
+					>https://pagination-server-five.vercel.app/api?page=3&perPage=2</a
+				>
+				<br />
+				Code above returns:
+
+				<div>
+					{"objects":[{"name":"random name 5","content":"random content
+					5"},{"name":"random name 6","content":"random content
+					6"}],"nextPage":4}
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

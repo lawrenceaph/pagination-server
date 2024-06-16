@@ -3,8 +3,11 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type PaginationResult struct {
@@ -15,30 +18,57 @@ type PaginationResult struct {
 type Object struct {
 	Name    string `json:"name"`
 	Content string `json:"content"`
+	Image   string `json:"image"`
 }
 
-func simulatePagination(page int, objectsPerPage int) PaginationResult {
-	const totalObjects = 500
-	totalPages := (totalObjects + objectsPerPage - 1) / objectsPerPage
+const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
-	if page > totalPages || page < 1 {
-		return PaginationResult{Objects: nil, NextPage: 0}
+func generateLoremIpsum(words int) string {
+	wordList := strings.Fields(loremIpsum)
+	result := make([]string, words)
+	for i := range result {
+		result[i] = wordList[rand.Intn(len(wordList))]
+	}
+	return strings.Join(result, " ")
+}
+
+func simulatePagination(page int, objectsPerPage int, longContent bool) PaginationResult {
+	const totalObjects = 10000
+	const maxObjectsPerRequest = 1000
+
+	if objectsPerPage > maxObjectsPerRequest {
+		objectsPerPage = maxObjectsPerRequest
 	}
 
 	start := (page - 1) * objectsPerPage
 	end := start + objectsPerPage
 
-	var objects []Object
+	if start >= totalObjects {
+		return PaginationResult{Objects: nil, NextPage: 0}
+	}
 
-	for i := start; i < end && i < totalObjects; i++ {
+	if end > totalObjects {
+		end = totalObjects
+	}
+
+	var objects []Object
+	rand.Seed(time.Now().UnixNano())
+
+	for i := start; i < end; i++ {
+		content := fmt.Sprintf("random content %d", i+1)
+		if longContent {
+			content = generateLoremIpsum(50) // Generate 50 words of Lorem Ipsum text
+		}
+
 		objects = append(objects, Object{
 			Name:    fmt.Sprintf("random name %d", i+1),
-			Content: fmt.Sprintf("random content %d", i+1),
+			Content: content,
+			Image:   "https://placehold.co/600x400",
 		})
 	}
 
 	nextPage := 0
-	if page < totalPages {
+	if end < totalObjects {
 		nextPage = page + 1
 	}
 
@@ -49,6 +79,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// Default parameters
 	currentPage := 1
 	objectsPerPage := 10
+	longContent := false
 
 	// Parse query parameters
 	query := r.URL.Query()
@@ -58,9 +89,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if perPage, err := strconv.Atoi(query.Get("perPage")); err == nil && perPage > 0 {
 		objectsPerPage = perPage
 	}
+	if query.Get("longContent") == "true" {
+		longContent = true
+	}
 
 	// Fetch paginated data
-	data := simulatePagination(currentPage, objectsPerPage)
+	data := simulatePagination(currentPage, objectsPerPage, longContent)
 
 	// Convert data to JSON
 	responseData, err := json.Marshal(data)
